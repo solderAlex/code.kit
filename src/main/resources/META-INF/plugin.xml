@@ -1,0 +1,26 @@
+<idea-plugin>
+    <id>com.yy.shophub.code.kit</id>
+    <name>code.kit</name>
+    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YY</vendor>
+
+    <description><![CDATA[
+    generate mybtis code<br>
+    ]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="code-by-db" class="com.yy.shop.codekit.CodeByDbAction" text="Code Kit" description="build code by DB">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>

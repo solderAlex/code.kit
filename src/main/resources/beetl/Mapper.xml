@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="${p.mapper.pkg}.${p.mapper.name}">
+    <resultMap id="BaseResultMap" type="${p.entity.pkg}.${p.entity.name}">
+        <id property="id" column="id"/>
+        <%for(item in p.entity.fields){%>
+        <%if(item.field != 'id'){%>
+        <result property="${item.field}" column="${item.column}"/>
+        <%}%>
+        <%}%>
+    </resultMap>
+
+    <sql id="Base_Column">
+        ${p.mapperXml.allColumns}
+    </sql>
+
+    <select id="getById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column"/>
+        from `${p.mapperXml.tableName}`
+        where id = #{id}
+    </select>
+
+    <select id="listByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column"/>
+        from `${p.mapperXml.tableName}`
+        where id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into `${p.mapperXml.tableName}`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <%for(item in p.entity.fields){
+          if(item.field != 'updateTime' && item.field != 'createTime') {%>
+            <if test="${item.field} != null">${item.formatColumn},</if>
+          <%}%>
+        <%}%>
+        </trim>
+        <trim prefix="value(" suffix=")" suffixOverrides=",">
+        <%for(item in p.entity.fields){
+         if(item.field != 'updateTime' && item.field != 'createTime') {%>
+            <if test="${item.field} != null">#{${item.field}},</if>
+          <%}%>
+        <%}%>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into `${p.mapperXml.tableName}`
+        (${p.mapperXml.insertColumns})
+        <foreach collection="list" index="index" item="item" separator="," open="values">
+            (${p.mapperXml.insertBatchValues})
+        </foreach>
+    </insert>
+
+    <update id="updateById">
+        update `${p.mapperXml.tableName}`
+        <set>
+        <%for(item in p.entity.fields){
+        if(item.field != 'id' && item.field != 'updateTime' && item.field != 'createTime') {%>
+            <if test="${item.field} != null">${item.formatColumn} = #{${item.field}},</if>
+        <%}%>
+        <%}%>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from `${p.mapperXml.tableName}` where id=#{id}
+    </delete>
+</mapper>

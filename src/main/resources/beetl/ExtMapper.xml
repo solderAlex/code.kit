@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="${p.extMapper.pkg}.${p.extMapper.name}">
+    <resultMap id="BaseResultMap" type="${p.entity.pkg}.${p.entity.name}"
+               extends="${p.mapper.pkg}.${p.mapper.name}.BaseResultMap">
+    </resultMap>
+
+    <sql id="Base_Column">
+        <include refid="${p.mapper.pkg}.${p.mapper.name}.Base_Column"/>
+    </sql>
+
+    <sql id="Sql_Where">
+        <where>
+
+        </where>
+    </sql>
+
+    <select id="count" resultType="int">
+        select count(id)
+        from `${p.mapperXml.tableName}`
+        <include refid="Sql_Where"/>
+    </select>
+
+    <select id="listPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column"/>
+        from `${p.mapperXml.tableName}`
+        <include refid="Sql_Where"/>
+        order by
+        <choose>
+            <when test="orderBy != null and orderBy.size() >0">
+                <foreach collection="orderBy" item="item" separator=",">
+                    #{item.column} #{item.type}
+                </foreach>
+            </when>
+            <otherwise>
+                id desc
+            </otherwise>
+        </choose> limit #{offset}, #{limit}
+    </select>
+</mapper>
